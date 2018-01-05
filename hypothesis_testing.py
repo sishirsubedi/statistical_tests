@@ -3,10 +3,11 @@ import numpy as np
 import scipy.stats as stats
 import matplotlib.pylab as plt
 from statsmodels.formula.api import ols
+from statsmodels.stats.anova import anova_lm
 import statsmodels.api as sm
 import seaborn as sns
 import random
-
+from statsmodels.graphics.factorplots import interaction_plot
 
 #fisher exact test
 
@@ -134,4 +135,27 @@ formula = 'Measurement ~ Technician'
 model = ols(formula, df_techs).fit()
 aov_table = sm.stats.anova_lm(model, typ=2)
 print(aov_table)
+
+############# two way anova
+
+data = pd.read_csv("ToothGrowth.csv")
+data= data.iloc[:,1:]
+data.columns =['effect','supplier','dose']
+data.head(5)
+
+data[data.supplier=='VC'].effect.mean()
+data[data.supplier=='OJ'].effect.mean()
+data[data.dose==0.5].effect.mean()
+data[data.dose==1.0].effect.mean()
+data[data.dose==2.0].effect.mean()
+
+sns.factorplot(data=data, x='dose', y='effect',
+               hue='supplier',kind='box', legend=True)
+
+fig = interaction_plot(data.dose, data.supplier, data.effect,colors=['red','blue'], markers=['D','^'], ms=10)
+# here we can see that OJ brand is more effective even in lower dose, and both brands are equally effective at higher dose
+formula = 'effect ~ supplier + dose + supplier:dose'
+model = ols(formula, data).fit()
+aov_table = anova_lm(model, typ=2)
+print aov_table
 
