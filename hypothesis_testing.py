@@ -11,19 +11,30 @@ from statsmodels.graphics.factorplots import interaction_plot
 import rpy2.robjects as robjects
 from sklearn.feature_selection import f_regression
 from scipy.stats import f
-#fisher exact test
-
-'''
-        School1  School2
-male      8        12
-female    12        8
-'''
-gender = [[7,3],[3,7]]
-oddsratio, pvalue = stats.fisher_exact(gender)
-print (pvalue)
 
 
-#chi square test
+#chi square test - is for count data to test expected and independence
+
+
+### chit test for one way table -- phenotype 9:3:3:1 ratio
+## is proportion same as expected ?
+obs = [284,21,21,55]
+exp = [214.3,71.4,71.4,23.8]
+phenotype = [obs,exp]
+chi2, p, ddof, expected = stats.chi2_contingency(phenotype)
+print (p)
+
+### chi test for two way table ( test for independence)
+### example 1 - relationship between drinking frequency and police arrest
+    # low, mid, high times
+police =[71,154,398]
+nopolice =[4992,2808,2737]
+drinking = [police,nopolice]
+chi2, p, ddof, expected = stats.chi2_contingency(phenotype)
+print (p)
+### here important expectation is calculated as : (rowsum * columnsum)/(total)
+
+## example 2 - is there relationship between party affiliation and gender
 ''' 	Republican 	Democrat 	Totals
 M 	    215 	    143 	    358
 F 	    19      	64 	        83
@@ -33,6 +44,8 @@ house = [ [ 314, 44 ], [  33,334 ] ]
 chi2, p, ddof, expected = stats.chi2_contingency( house )
 print (p)
 
+
+## example 3 - are these dice same
 diceroll1 = [9,10,12,11,8,10]
 diceroll2 = [6,0,14,20,11,9]
 dices =[diceroll1,diceroll2]
@@ -41,25 +54,16 @@ print (p)
 chi2, p, ddof, expected = stats.chi2_contingency(dices)
 print (p)
 
-
-
-### chit test for one way table -- phenotype 9:3:3:1 ratio
-obs = [284,21,21,55]
-exp = [214.3,71.4,71.4,23.8]
-phenotype = [obs,exp]
-chi2, p, ddof, expected = stats.chi2_contingency(phenotype)
-print (p)
-
-### chi test for two way table ( test for independence)
-### drinking problem
-       # low, mid, high times
-police =[71,154,398]
-nopolice =[4992,2808,2737]
-drinking = [police,nopolice]
-chi2, p, ddof, expected = stats.chi2_contingency(phenotype)
-print (p)
-### here important expectation is calculated as : (rowsum * columnsum)/(total)
-
+## when data is less than 5 then chi square is not good for test of independence so use fisher exact test
+#fisher exact test
+'''
+        School1  School2
+male      8        12
+female    12        8
+'''
+gender = [[7,3],[3,7]]
+oddsratio, pvalue = stats.fisher_exact(gender)
+print (pvalue)
 
 
 '''
